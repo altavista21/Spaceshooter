@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Space Shooter 2D</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Landscape orientation warning -->
+  <div id="rotate-warning">
+    <div class="rotate-content">
+      <div class="phone-icon">📱</div>
+      <h2>Please Rotate Your Phone</h2>
+      <p>This game is designed to be played in portrait mode.</p>
+    </div>
+  </div>
+
+  <!-- Game Container -->
+  <div id="game-container">
+    <canvas id="game-canvas"></canvas>
+
+    <!-- UI Overlay Layer -->
+    <div id="ui-layer">
+
+      <!-- HUD Screen -->
+      <div id="hud-screen" class="ui-screen hidden">
+        <div class="hud-top">
+          <div class="hud-score-container">
+            <span class="hud-label">SCORE</span>
+            <span id="hud-score" class="hud-value">0</span>
+          </div>
+          <div class="hud-wave-container">
+            <span class="hud-label">WAVE</span>
+            <span id="hud-wave" class="hud-value">1</span>
+          </div>
+          <button id="btn-pause" class="hud-btn" aria-label="Pause">⏸</button>
+        </div>
+
+        <div id="boss-hp-container" class="boss-hp-bar-wrap hidden">
+          <div class="boss-title">⚠️ BOSS APPROACHING ⚠️</div>
+          <div class="boss-hp-outer">
+            <div id="boss-hp-inner" class="boss-hp-inner" style="width: 100%;"></div>
+          </div>
+        </div>
+
+        <div class="hud-bottom">
+          <div class="status-bars">
+            <div class="bar-group">
+              <span class="bar-label">HP</span>
+              <div class="bar-outer hp-outer">
+                <div id="hud-hp-bar" class="bar-inner hp-inner" style="width: 100%;"></div>
+              </div>
+            </div>
+            <div class="bar-group">
+              <span class="bar-label">SHD</span>
+              <div class="bar-outer shield-outer">
+                <div id="hud-shield-bar" class="bar-inner shield-inner" style="width: 0%;"></div>
+              </div>
+            </div>
+          </div>
+          <div id="hud-combo-container" class="combo-badge hidden">
+            <span id="hud-combo-val">2x</span> COMBO
+          </div>
+        </div>
+
+        <!-- Manual Fire Button (shown only when Auto Fire is OFF) -->
+        <button id="btn-manual-fire" class="manual-fire-btn hidden">FIRE</button>
+      </div>
+
+      <!-- Main Menu Screen -->
+      <div id="menu-screen" class="ui-screen">
+        <div class="title-container">
+          <h1 class="game-title">SPACE SHOOTER</h1>
+          <p class="game-subtitle">SURVIVE THE GALAXY</p>
+        </div>
+
+        <div class="menu-high-score">
+          <span class="label">HIGH SCORE</span>
+          <span id="menu-high-score-val" class="value">0</span>
+        </div>
+
+        <div class="menu-actions">
+          <button id="btn-start-game" class="btn btn-primary">START GAME</button>
+          <button id="btn-how-to-play" class="btn btn-secondary">HOW TO PLAY</button>
+          <button id="btn-settings" class="btn btn-secondary">SETTINGS</button>
+        </div>
+      </div>
+
+      <!-- How To Play Overlay -->
+      <div id="how-to-play-screen" class="ui-screen hidden">
+        <div class="modal-box">
+          <h2 class="modal-title">HOW TO PLAY</h2>
+          <div class="instructions-list">
+            <div class="instruction-item">
+              <span class="icon">✋</span>
+              <div>
+                <strong>MOVE</strong>
+                <p>Drag your finger anywhere on screen to control ship.</p>
+              </div>
+            </div>
+            <div class="instruction-item">
+              <span class="icon">🔫</span>
+              <div>
+                <strong>AUTO FIRE</strong>
+                <p>Hold finger on screen to shoot automatically.</p>
+              </div>
+            </div>
+            <div class="instruction-item">
+              <span class="icon">💥</span>
+              <div>
+                <strong>DESTROY</strong>
+                <p>Shoot enemies & bosses to collect power-ups.</p>
+              </div>
+            </div>
+            <div class="instruction-item">
+              <span class="icon">🛡️</span>
+              <div>
+                <strong>SURVIVE</strong>
+                <p>Dodge enemy bullets and build up high combos!</p>
+              </div>
+            </div>
+          </div>
+          <button id="btn-close-how-to-play" class="btn btn-primary">GOT IT</button>
+        </div>
+      </div>
+
+      <!-- Settings Screen -->
+      <div id="settings-screen" class="ui-screen hidden">
+        <div class="modal-box">
+          <h2 class="modal-title">SETTINGS</h2>
+          <div class="settings-list">
+            <div class="setting-item">
+              <span>Sound SFX</span>
+              <button id="btn-toggle-sound" class="btn-toggle active">ON</button>
+            </div>
+            <div class="setting-item">
+              <span>Music</span>
+              <button id="btn-toggle-music" class="btn-toggle active">ON</button>
+            </div>
+            <div class="setting-item">
+              <span>Auto Fire</span>
+              <button id="btn-toggle-autofire" class="btn-toggle active">ON</button>
+            </div>
+            <div class="setting-item">
+              <span>Vibration</span>
+              <button id="btn-toggle-vibration" class="btn-toggle active">ON</button>
+            </div>
+          </div>
+          <button id="btn-close-settings" class="btn btn-primary">BACK</button>
+        </div>
+      </div>
+
+      <!-- Pause Overlay -->
+      <div id="pause-screen" class="ui-screen hidden">
+        <div class="modal-box">
+          <h2 class="modal-title">GAME PAUSED</h2>
+          <div class="menu-actions">
+            <button id="btn-resume" class="btn btn-primary">RESUME</button>
+            <button id="btn-restart-pause" class="btn btn-secondary">RESTART</button>
+            <button id="btn-main-menu-pause" class="btn btn-danger">MAIN MENU</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Game Over Screen -->
+      <div id="game-over-screen" class="ui-screen hidden">
+        <div class="modal-box">
+          <h2 class="modal-title alert-title">GAME OVER</h2>
+          <div id="new-high-score-tag" class="new-high-score-badge hidden">✨ NEW HIGH SCORE! ✨</div>
+          
+          <div class="stats-grid">
+            <div class="stat-row">
+              <span>SCORE</span>
+              <span id="go-score" class="stat-val">0</span>
+            </div>
+            <div class="stat-row">
+              <span>HIGH SCORE</span>
+              <span id="go-high-score" class="stat-val">0</span>
+            </div>
+            <div class="stat-row">
+              <span>WAVE REACHED</span>
+              <span id="go-wave" class="stat-val">1</span>
+            </div>
+            <div class="stat-row">
+              <span>ENEMIES DESTROYED</span>
+              <span id="go-kills" class="stat-val">0</span>
+            </div>
+          </div>
+
+          <div class="menu-actions">
+            <button id="btn-play-again" class="btn btn-primary">PLAY AGAIN</button>
+            <button id="btn-main-menu-go" class="btn btn-secondary">MAIN MENU</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Warning Notification Overlay -->
+      <div id="boss-warning-overlay" class="boss-warning-screen hidden">
+        <div class="warning-text">WARNING</div>
+        <div class="sub-warning-text">BOSS APPROACHING</div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
